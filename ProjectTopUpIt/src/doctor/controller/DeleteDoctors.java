@@ -1,0 +1,67 @@
+package doctor.controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import doctor.dao.DoctorDAO;
+import doctor.dao.impl.DoctorDAOImpl;
+import doctor.model.Doctors;
+
+/**
+ * Servlet implementation class DeleteDoctors
+ */
+@WebServlet("/DeleteDoctors")
+public class DeleteDoctors extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public DeleteDoctors() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
+		response.setContentType("text/html");
+		PrintWriter pw=response.getWriter();
+	
+		String Doctor_ID=request.getParameter("Doctor_ID");
+		String Doctor_Name=request.getParameter("Doctor_Name");
+		String Prisoner_ID=request.getParameter("Prisoner_ID");
+		
+		Doctors doctors=new Doctors(Doctor_ID,Doctor_Name,Prisoner_ID);
+		
+		ServletContext sc=getServletContext();
+		Connection con=(Connection)sc.getAttribute("connObj");
+		DoctorDAO sdao=new DoctorDAOImpl(con);
+		int update=sdao.deletePrisoner(doctors);
+		pw.println("<center><h2>"+update+" Doctor Record Deleted Successfully..</h2></center>");
+		RequestDispatcher rd=request.getRequestDispatcher("clinic.jsp");
+		rd.include(request, response);
+		
+	}
+
+}
